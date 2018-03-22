@@ -96,10 +96,6 @@ COPY *.sh /usr/local/bin/
 RUN chmod 755 /usr/local/bin/*.sh
 
 
-# copy log4j needed for IIB Logging component
-RUN curl -o /var/mqsi/shared-classes/log4j-api-2.8.1.jar https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api/2.8.1 \
-    curl -o /var/mqsi/shared-class/log4j-core-2.8.1.jar http://central.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.8.1/log4j-core-2.8.1.jar
-
 
 # Set BASH_ENV to source mqsiprofile when using docker exec bash -c
 ENV BASH_ENV=/usr/local/bin/iib_env.sh MQSI_MQTT_LOCAL_HOSTNAME=127.0.0.1 LANG=en_US.UTF-8
