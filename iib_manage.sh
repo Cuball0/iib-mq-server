@@ -23,6 +23,13 @@ stop()
         exit
 }
 
+start_sshd()
+{
+	echo "starting sshd"
+	sudo /usr/sbin/sshd -D
+	echo "started sshd"
+}
+
 start_iib()
 {
 	echo "----------------------------------------"
@@ -81,6 +88,7 @@ monitor()
 license-check.sh
 sudo -u root -E mq_start.sh
 start_iib
+start_sshd
 trap stop SIGTERM SIGINT
 monitor
 

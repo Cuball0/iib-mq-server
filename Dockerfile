@@ -37,6 +37,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     sudo \
     tar \
     util-linux \
+	openssh-server \
   # Download and extract the MQ installation files
   && export DIR_EXTRACT=/tmp/mq \
   && mkdir -p ${DIR_EXTRACT} \ 
@@ -69,7 +70,16 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   # Optional: Set these values for the Bluemix Vulnerability Report
   && sed -i 's/PASS_MAX_DAYS\t99999/PASS_MAX_DAYS\t90/' /etc/login.defs \
   && sed -i 's/PASS_MIN_DAYS\t0/PASS_MIN_DAYS\t1/' /etc/login.defs \
-  && sed -i 's/password\t\[success=1 default=ignore\]\tpam_unix\.so obscure sha512/password\t[success=1 default=ignore]\tpam_unix.so obscure sha512 minlen=8/' /etc/pam.d/common-password
+  && sed -i 's/password\t\[success=1 default=ignore\]\tpam_unix\.so obscure sha512/password\t[success=1 default=ignore]\tpam_unix.so obscure sha512 minlen=8/' /etc/pam.d/common-password \
+  # configure SSHD server
+  && mkdir -p /var/run/sshd \
+  && echo 'root:root' | chpasswd \
+  && sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
+  && sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd \
+  && echo "export VISIBLE=now" >> /etc/profile
+
+  
+  
 
 ARG IIB_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/10.0.0.11-IIB-LINUX64-DEVELOPER.tar.gz
 
@@ -101,7 +111,7 @@ RUN chmod 755 /usr/local/bin/*.sh
 ENV BASH_ENV=/usr/local/bin/iib_env.sh MQSI_MQTT_LOCAL_HOSTNAME=127.0.0.1 LANG=en_US.UTF-8
 
 # Expose default admin port and http ports
-EXPOSE 4414 7800 1414
+EXPOSE 4414 7800 1414 22
 
 USER iibuser
 
