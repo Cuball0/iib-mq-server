@@ -35,6 +35,9 @@ start_iib()
 	echo "----------------------------------------"
         /opt/ibm/iib-10.0.0.11/iib version
 	echo "----------------------------------------"
+	echo "writing PID to /tmp/pid.stdout"
+	
+	echo && > /tmp/pid.stdout
 
         NODE_EXISTS=`mqsilist | grep $NODENAME > /dev/null ; echo $?`
 
